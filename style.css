@@ -1,22 +1,11 @@
-body {
-  margin: 0;
-  font-family: "Comic Sans MS";
-  color: yellow;
+body {body-family: "Comic Sans MS";
   text-align: center;
+  color: yellow;
 
   background:
-    url("assets/no-need.jpeg") repeat,
-    url("assets/no-need.jpeg") repeat,
-    repeat;
-  background-size: 300px, 600px, auto;
+    url("assets/no-need.jpeg") repeat;
 
-  animation: bgMove 20s linear infinite;
-}
-
-@keyframes bgMove {
-  to {
-    background-position: 800px 400px, -600px 500px, 0 0;
-  }
+  background-size: 300px;
 }
 
 /* TEXT FIX */
@@ -27,53 +16,35 @@ h1, h2, h3, p {
 /* HEADER */
 .hero h1 {
   font-size: 4rem;
-  text-shadow: 6px 6px red, -6px -6px blue;
-}
-
-/* BANNER */
-.flash-banner {
-  background: black;
-  color: lime;
-  font-size: 22px;
-  font-weight: bold;
+  text-shadow: 5px 5px red, -5px -5px blue;
 }
 
 /* CARDS */
 .card {
   background: rgba(0,0,0,0.9);
   border: 4px solid yellow;
-  border-radius: 12px;
-  margin: 20px;
+  margin: 20px auto;
   padding: 20px;
+  max-width: 600px;
 }
 
-/* ENGLAND CARD */
+/* GLOBAL MATCH HIGHLIGHT */
+.highlight {
+  border: 5px solid lime;
+  background: rgba(0,0,0,0.95);
+}
+
+/* ENGLAND CARDS */
 .england-card {
   background: linear-gradient(red, white, blue);
   color: black;
-  font-weight: bold;
 }
 
 /* COUNTDOWN */
 .big-count {
-  font-size: 2.5rem;
-  color: lime;
-  background: rgba(0,0,0,0.8);
+  font-size: 2rem;
+  margin-top: 10px;
+  background: black;
+  padding: 8px;
   display: inline-block;
-  padding: 10px;
-  border-radius: 10px;
-}
-
-/* LIVE */
-.live-card {
-  background: red;
-  color: white;
-}
-
-/* LINEUPS */
-.player {
-  background: blue;
-  border: 1px solid white;
-  margin: 3px;
-  padding: 5px;
 }
