@@ -1,0 +1,23 @@
+[
+  {
+    "home": "England",
+    "away": "Croatia",
+    "venue": "Dallas Stadium",
+    "date": "2026-06-17T20:00:00Z",
+    "uk_time": "9:00 PM BST"
+  },
+  {
+    "home": "England",
+    "away": "Ghana",
+    "venue": "Boston Stadium",
+    "date": "2026-06-23T20:00:00Z",
+    "uk_time": "9:00 PM BST"
+  },
+  {
+    "home": "Panama",
+    "away": "England",
+    "venue": "New York New Jersey Stadium",
+    "date": "2026-06-27T21:00:00Z",
+    "uk_time": "10:00 PM BST"
+  }
+]
