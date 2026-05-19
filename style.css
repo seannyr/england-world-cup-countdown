@@ -4,63 +4,47 @@ body {
   color: yellow;
   text-align: center;
 
-  /* CHAOS LAYERS */
   background:
-    background: url("assets/no-need.jpeg") repeat,
-    url("https://upload.wikimedia.org/wikipedia/en/thumb/8/8b/England_national_football_team_crest.svg/512px-England_national_football_team_crest.svg.png") repeat,
-    url("https://i.imgur.com/2yaf2wb.png") repeat,
-    repeating-linear-gradient(
-      45deg,
-      red,
-      red 30px,
-      white 30px,
-      white 60px,
-      blue 60px,
-      blue 90px
-    );
+    url("assets/no-need.jpeg") repeat,
+    url("assets/no-need.jpeg") repeat,
+    repeat;
+  background-size: 300px, 600px, auto;
 
-  background-size: 250px, 120px, 180px, auto;
-
-  animation: bgScroll 25s linear infinite;
+  animation: bgMove 20s linear infinite;
 }
 
-@keyframes bgScroll {
+@keyframes bgMove {
   to {
-    background-position: 800px 400px, -500px 700px, 600px -300px, 0 0;
+    background-position: 800px 400px, -600px 500px, 0 0;
   }
+}
+
+/* TEXT FIX */
+h1, h2, h3, p {
+  text-shadow: 2px 2px 6px black;
+}
+
+/* HEADER */
+.hero h1 {
+  font-size: 4rem;
+  text-shadow: 6px 6px red, -6px -6px blue;
 }
 
 /* BANNER */
 .flash-banner {
   background: black;
   color: lime;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: bold;
-}
-
-/* TITLE */
-.hero h1 {
-  font-size: 4rem;
-  text-shadow: 6px 6px red, -6px -6px blue;
-  animation: explode 0.5s infinite alternate;
-}
-
-@keyframes explode {
-  from { transform: scale(1); }
-  to { transform: scale(1.1); }
 }
 
 /* CARDS */
 .card {
-  background: rgba(0,0,0,0.85);
-  border: 4px dashed yellow;
+  background: rgba(0,0,0,0.9);
+  border: 4px solid yellow;
+  border-radius: 12px;
   margin: 20px;
   padding: 20px;
-  animation: wobble 2s infinite;
-}
-
-@keyframes wobble {
-  50% { transform: rotate(2deg); }
 }
 
 /* ENGLAND CARD */
@@ -68,70 +52,29 @@ body {
   background: linear-gradient(red, white, blue);
   color: black;
   font-weight: bold;
-  animation: pulse 1s infinite;
-}
-
-@keyframes pulse {
-  50% { transform: scale(1.08); }
 }
 
 /* COUNTDOWN */
 .big-count {
-  font-size: 3rem;
+  font-size: 2.5rem;
   color: lime;
-  animation: blink 1s infinite;
-}
-
-@keyframes blink {
-  50% { opacity: 0; }
+  background: rgba(0,0,0,0.8);
+  display: inline-block;
+  padding: 10px;
+  border-radius: 10px;
 }
 
 /* LIVE */
 .live-card {
   background: red;
-  animation: shake 0.2s infinite;
-}
-
-@keyframes shake {
-  50% { transform: translateX(6px); }
+  color: white;
 }
 
 /* LINEUPS */
 .player {
   background: blue;
-  border: 2px solid white;
-  margin: 4px;
+  border: 1px solid white;
+  margin: 3px;
   padding: 5px;
 }
-
-/* FLOATING BADGE */
-body::before {
-  content: "";
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  width: 100px;
-  height: 100px;
-
-  background: url("https://upload.wikimedia.org/wikipedia/en/thumb/8/8b/England_national_football_team_crest.svg/512px-England_national_football_team_crest.svg.png") center/contain no-repeat;
-
-  animation: spin 4s linear infinite;
-}
-
-/* FLOATING BULLDOG */
-body::after {
-  content: "";
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
-  width: 120px;
-  height: 120px;
-
-  background: url("https://i.imgur.com/2yaf2wb.png") center/contain no-repeat;
-
-  animation: spin 6s linear infinite;
-}
-
-@keyframes spin {
-  100% { transform: rotate(360deg); }
-}
+``
