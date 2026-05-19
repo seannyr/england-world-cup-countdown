@@ -4,12 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>England World Cup Hub</title>
-  <link rel="stylesheet" href="style.css">
+
+  <!-- ✅ THIS WAS MISSING -->
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
 
-<marquee>🏆 IT'S COMING HOME 🏆 THREE LIONS 🏆 FOOTBALL'S COMING HOME 🏆</marquee>
+<marquee class="flash-banner">
+  🏆 IT'S COMING HOME 🏆 ENGERLANDDD 🏆 THREE LIONS ON A SHIRT 🏆
+</marquee>
 
 <header class="hero">
   <h1>🏴 ENGLAND WORLD CUP HUB 🏴</h1>
@@ -18,7 +22,7 @@
 <main>
 
   <section>
-    <h2>🌍 First World Cup Match</h2>
+    <h2>🌍 First World Cup Game</h2>
     <div id="first-match"></div>
   </section>
 
@@ -28,17 +32,28 @@
   </section>
 
   <section>
-    <h2>📅 Next England Match</h2>
+    <h2>🏴 Next England Match</h2>
     <div id="england-match"></div>
   </section>
 
   <section>
-    <h2>⏳ England Countdown</h2>
+    <h2>🔥 England Countdown</h2>
     <div id="england-countdown"></div>
+  </section>
+
+  <section id="live-section" style="display:none;">
+    <h2>⚽ LIVE MATCH ⚽</h2>
+    <div id="live"></div>
+  </section>
+
+  <section id="lineups-section" style="display:none;">
+    <h2>🚨 LINEUPS 🚨</h2>
+    <div id="lineups"></div>
   </section>
 
 </main>
 
+<!-- ✅ THIS WAS ALSO BROKEN -->
 <script src="script.js"></script>
 </body>
 </html>
