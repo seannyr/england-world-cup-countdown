@@ -7,46 +7,32 @@ body {
 
 .hero {
   text-align: center;
-  padding: 60px 20px;
+  padding: 40px 20px;
   background: linear-gradient(180deg, #102040, #0b1220);
 }
 
-.hero h1 {
-  font-size: 3rem;
-  margin-bottom: 10px;
-}
-
 .countdown {
-  margin-top: 30px;
   font-size: 2rem;
   font-weight: bold;
+  margin: 15px 0;
 }
 
 main {
-  max-width: 1000px;
+  max-width: 900px;
   margin: auto;
   padding: 20px;
 }
 
-.fixture-card {
+.card {
   background: #16233c;
-  border-radius: 16px;
   padding: 20px;
+  border-radius: 14px;
   margin-bottom: 20px;
-}
-
-.fixture-card h3 {
-  margin-top: 0;
-}
-
-.live-score {
-  font-size: 2rem;
-  font-weight: bold;
 }
 
 .lineup-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 10px;
 }
 
@@ -54,4 +40,5 @@ main {
   background: #1d3152;
   padding: 10px;
   border-radius: 10px;
+  text-align: center;
 }
