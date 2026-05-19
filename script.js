@@ -24,18 +24,28 @@ async function loadData() {
         id: m.fixture.id
       }));
     } else {
-      throw "No API data";
+      throw new Error("API empty");
     }
 
-  } catch {
+  } catch (err) {
+    console.log("Using fallback fixtures");
+
     const res = await fetch("fixtures.json");
     const data = await res.json();
-    fixtures = data.map(f => ({ ...f, id: null }));
+
+    fixtures = data.map(f => ({
+      date: f.date,
+      home: f.home,
+      away: f.away,
+      venue: f.venue,
+      id: null
+    }));
   }
 
   init();
 }
 
+// INIT
 function init() {
   fixtures.sort((a,b) => new Date(a.date) - new Date(b.date));
 
@@ -48,22 +58,26 @@ function init() {
   setInterval(updateEverything, 1000);
 }
 
+// FIRST MATCH
+function renderFirstMatch() {
+  const first = fixtures[0];
+
+  document.getElementById("first-match").innerHTML = `
+    <div class="card">
+      <h2>${first.home} vs ${first.away}</h2>
+      <p>📍 ${first.venue}</p>
+      <p>🗓 ${new Date(first.date).toLocaleString("en-GB")}</p>
+    </div>
+  `;
+}
+
+// NEXT ENGLAND MATCH
 function getNextEnglandMatch() {
   const now = new Date();
   return englandFixtures.find(m => new Date(m.date) > now);
 }
 
-function renderFirstMatch() {
-  const first = fixtures[0];
-
-  document.getElementById("first-match").innerHTML = `
-    <div class="card glitch">
-      <h2>${first.home} vs ${first.away}</h2>
-      <p>📍 ${first.venue}</p>
-    </div>
-  `;
-}
-
+// MAIN LOOP
 function updateEverything() {
   const now = new Date();
 
@@ -73,9 +87,10 @@ function updateEverything() {
   if (!currentMatch) return;
 
   document.getElementById("england-match").innerHTML = `
-    <div class="card england-card pulse">
+    <div class="card england-card">
       <h2>${currentMatch.home} vs ${currentMatch.away}</h2>
       <p>📍 ${currentMatch.venue}</p>
+      <p>🗓 ${new Date(currentMatch.date).toLocaleString("en-GB")}</p>
     </div>
   `;
 
@@ -85,11 +100,12 @@ function updateEverything() {
   loadLineups();
 }
 
+// COUNTDOWN
 function updateCountdown(id, target, now) {
   const diff = target - now;
 
   if (diff <= 0) {
-    document.getElementById(id).innerHTML = "⚽ LIVE ⚽";
+    document.getElementById(id).innerHTML = "<div class='big-count'>⚽ LIVE ⚽</div>";
     return;
   }
 
@@ -98,7 +114,7 @@ function updateCountdown(id, target, now) {
   const s = Math.floor((diff / 1000) % 60);
 
   document.getElementById(id).innerHTML = `
-    <div class="big-count">${h}h ${m}m ${s}s</div>
+    <div class="big-count">⏳ ${h}h ${m}m ${s}s</div>
   `;
 }
 
@@ -106,28 +122,53 @@ function updateCountdown(id, target, now) {
 async function loadLive() {
   if (!currentMatch?.id) return;
 
-  const res = await fetch(
-    `${BASE_URL}/fixtures?id=${currentMatch.id}`,
-    { headers: { "x-apisports-key": API_KEY } }
-  );
+  try {
+    const res = await fetch(
+      `${BASE_URL}/fixtures?id=${currentMatch.id}`,
+      { headers: { "x-apisports-key": API_KEY } }
+    );
 
-  const data = await res.json();
-  const match = data.response?.[0];
+    const data = await res.json();
+    const match = data.response?.[0];
 
-  if (!match) return;
+    if (!match) return;
 
-  document.getElementById("live-section").style.display = "block";
+    document.getElementById("live-section").style.display = "block";
 
-  document.getElementById("live").innerHTML = `
-    <div class="card live-card">
-      <h1>${match.goals.home} - ${match.goals.away}</h1>
-      <h3>${match.fixture.status.long}</h3>
-    </div>
-  `;
+    document.getElementById("live").innerHTML = `
+      <div class="card live-card">
+        <h1>${match.goals.home} - ${match.goals.away}</h1>
+        <h3>${match.fixture.status.long}</h3>
+      </div>
+    `;
+  } catch {}
 }
 
 // LINEUPS
 async function loadLineups() {
   if (!currentMatch?.id) return;
 
-  const res = await fetch(
+  try {
+    const res = await fetch(
+      `${BASE_URL}/fixtures/lineups?fixture=${currentMatch.id}`,
+      { headers: { "x-apisports-key": API_KEY } }
+    );
+
+    const data = await res.json();
+
+    if (!data.response?.length) return;
+
+    document.getElementById("lineups-section").style.display = "block";
+
+    document.getElementById("lineups").innerHTML =
+      data.response.map(team => `
+        <div>
+          <h3>${team.team.name}</h3>
+          ${team.startXI.map(p => `<div class="player">${p.player.name}</div>`).join("")}
+        </div>
+      `).join("");
+  } catch {}
+}
+
+loadData();
+``
