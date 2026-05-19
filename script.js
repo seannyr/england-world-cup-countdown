@@ -1,7 +1,6 @@
 const API_KEY = "2096cfafa894e4c6bfcae741f392a144";
 const BASE_URL = "https://v3.football.api-sports.io";
 
-
 let fixtures = [];
 let englandFixtures = [];
 
@@ -101,4 +100,4 @@ function updateCountdowns() {
 }
 
 loadData();
-
+``
