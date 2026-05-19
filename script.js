@@ -1,51 +1,87 @@
-const API_KEY = "2096cfafa894e4c6bfcae741f392a144";
+const API_KEY = "2096cfafa894e4c6bfcae741f392a144"; // keep if you want lineups
 const BASE_URL = "https://v3.football.api-sports.io";
 
-// ----------------------------
-// STATE
-// ----------------------------
-let allFixtures = [];
 let englandFixtures = [];
 let currentEnglandMatch = null;
 
 // ----------------------------
-// LOAD ALL WORLD CUP FIXTURES
+// LOAD FROM LOCAL JSON (SAFE FOR GITHUB PAGES)
 // ----------------------------
-async function loadAllFixtures() {
-  const res = await fetch(`${BASE_URL}/fixtures?season=2026&next=50`, {
-    headers: {
-      "x-apisports-key": API_KEY
-    }
-  });
-
+async function loadFixtures() {
+  const res = await fetch("fixtures.json");
   const data = await res.json();
-  allFixtures = data.response || [];
 
-  setupGlobalCountdown();
-  setupEnglandFixtures();
+  englandFixtures = data
+    .map(f => ({
+      fixture: {
+        id: null,
+        date: f.date,
+        venue: { name: f.venue },
+        status: { long: "Not Started" }
+      },
+      teams: {
+        home: { name: f.home },
+        away: { name: f.away }
+      }
+    }))
+    .sort((a, b) => new Date(a.fixture.date) - new Date(b.fixture.date));
+
+  updateApp();
+  setInterval(updateApp, 60000);
+  setInterval(updateCountdown, 1000);
 }
 
 // ----------------------------
-// GLOBAL COUNTDOWN (TOP SECTION)
+// GET NEXT MATCH
 // ----------------------------
-function setupGlobalCountdown() {
-  updateGlobalCountdown();
-
-  setInterval(updateGlobalCountdown, 1000);
-}
-
-function updateGlobalCountdown() {
+function getNextMatch() {
   const now = new Date();
+  return englandFixtures.find(m => new Date(m.fixture.date) > now);
+}
 
-  // find next upcoming match globally
-  const nextMatch = allFixtures
-    .filter(m => new Date(m.fixture.date) > now)
-    .sort((a, b) => new Date(a.fixture.date) - new Date(b.fixture.date))[0];
+// ----------------------------
+// MAIN UPDATE
+// ----------------------------
+function updateApp() {
+  currentEnglandMatch = getNextMatch();
 
-  if (!nextMatch) return;
+  if (!currentEnglandMatch) return;
 
-  const target = new Date(nextMatch.fixture.date);
+  renderNextMatch();
+  updateCountdown();
+  tryLoadLineups();
+}
+
+// ----------------------------
+// RENDER MATCH
+// ----------------------------
+function renderNextMatch() {
+  const match = currentEnglandMatch;
+
+  document.getElementById("next-match").innerHTML = `
+    <div class="card">
+      <h3>${match.teams.home.name} vs ${match.teams.away.name}</h3>
+      <p>📍 ${match.fixture.venue.name}</p>
+      <p>🗓 ${new Date(match.fixture.date).toLocaleString("en-GB")}</p>
+    </div>
+  `;
+}
+
+// ----------------------------
+// COUNTDOWN
+// ----------------------------
+function updateCountdown() {
+  if (!currentEnglandMatch) return;
+
+  const now = new Date();
+  const target = new Date(currentEnglandMatch.fixture.date);
   const diff = target - now;
+
+  if (diff <= 0) {
+    document.getElementById("first-countdown").innerHTML =
+      "<h2>⚽ MATCH STARTED ⚽</h2>";
+    return;
+  }
 
   const d = Math.floor(diff / (1000*60*60*24));
   const h = Math.floor((diff / (1000*60*60)) % 24);
@@ -54,128 +90,51 @@ function updateGlobalCountdown() {
 
   document.getElementById("first-countdown").innerHTML = `
     <div class="card">
-      <h3>🌍 Next World Cup Match</h3>
-      <p><b>${nextMatch.teams.home.name}</b> vs <b>${nextMatch.teams.away.name}</b></p>
-      <p>⏰ ${new Date(nextMatch.fixture.date).toLocaleString("en-GB")}</p>
-
+      <h3>⏳ NEXT ENGLAND MATCH</h3>
       <h2>${d}d ${h}h ${m}m ${s}s</h2>
     </div>
   `;
 }
 
 // ----------------------------
-// ENGLAND FIXTURES (MAIN CONTENT)
+// TRY LOAD LINEUPS (API OPTIONAL)
 // ----------------------------
-async function setupEnglandFixtures() {
-  englandFixtures = allFixtures.filter(m =>
-    m.teams.home.name === "England" ||
-    m.teams.away.name === "England"
-  );
+async function tryLoadLineups() {
+  if (!API_KEY || !currentEnglandMatch.fixture.id) return;
 
-  if (englandFixtures.length === 0) return;
+  try {
+    const res = await fetch(
+      `${BASE_URL}/fixtures/lineups?fixture=${currentEnglandMatch.fixture.id}`,
+      { headers: { "x-apisports-key": API_KEY } }
+    );
 
-  renderNextEnglandMatch();
-  currentEnglandMatch = englandFixtures[0];
-}
+    const data = await res.json();
+    if (!data.response || data.response.length < 2) return;
 
-// ----------------------------
-// NEXT ENGLAND MATCH
-// ----------------------------
-function renderNextEnglandMatch() {
-  const match = englandFixtures[0];
-
-  document.getElementById("next-match").innerHTML = `
-    <div class="card">
-      <h3>🏴 ${match.teams.home.name} vs ${match.teams.away.name}</h3>
-      <p>📍 ${match.fixture.venue.name}</p>
-      <p>🗓 ${new Date(match.fixture.date).toLocaleString("en-GB")}</p>
-      <p>Status: ${match.fixture.status.long}</p>
-    </div>
-  `;
-}
-
-// ----------------------------
-// LINEUPS (AUTO DETECT)
-// ----------------------------
-let lineupsLoaded = false;
-
-async function checkLineups() {
-  if (!currentEnglandMatch || lineupsLoaded) return;
-
-  const res = await fetch(
-    `${BASE_URL}/fixtures/lineups?fixture=${currentEnglandMatch.fixture.id}`,
-    {
-      headers: {
-        "x-apisports-key": API_KEY
-      }
-    }
-  );
-
-  const data = await res.json();
-
-  if (data.response && data.response.length > 0) {
-    lineupsLoaded = true;
-
-    const england = data.response.find(t => t.team.name === "England");
-
-    const players = england.startXI.map(p => p.player.name);
-
-    document.getElementById("lineups-section").style.display = "block";
-
-    document.getElementById("lineups").innerHTML = `
-      <div class="lineup-grid">
-        ${players.map(p => `<div class="player">${p}</div>`).join("")}
-      </div>
-    `;
+    renderLineups(data.response);
+  } catch (err) {
+    console.log("No lineups yet");
   }
 }
 
 // ----------------------------
-// LIVE MATCH
+// RENDER LINEUPS
 // ----------------------------
-async function updateLive() {
-  if (!currentEnglandMatch) return;
+function renderLineups(teams) {
+  document.getElementById("lineups-section").style.display = "block";
 
-  const res = await fetch(
-    `${BASE_URL}/fixtures?id=${currentEnglandMatch.fixture.id}`,
-    {
-      headers: {
-        "x-apisports-key": API_KEY
-      }
-    }
-  );
-
-  const data = await res.json();
-  const match = data.response[0];
-
-  if (!match) return;
-
-  const goals = match.events
-    .filter(e => e.type === "Goal")
-    .map(g => `${g.player.name} ${g.time.elapsed}'`);
-
-  document.getElementById("live-section").style.display = "block";
-
-  document.getElementById("live").innerHTML = `
-    <div class="card">
-      <h2>
-        ${match.teams.home.name}
-        ${match.goals.home} - ${match.goals.away}
-        ${match.teams.away.name}
-      </h2>
-
-      <h3>⚽ Goals</h3>
-      <ul>
-        ${goals.map(g => `<li>${g}</li>`).join("")}
-      </ul>
+  const html = teams.map(team => `
+    <div>
+      <h3>${team.team.name}</h3>
+      <div class="lineup-grid">
+        ${team.startXI.map(p => `<div class="player">${p.player.name}</div>`).join("")}
+      </div>
     </div>
-  `;
+  `).join("");
+
+  document.getElementById("lineups").innerHTML = html;
 }
 
 // ----------------------------
-// START APP
-// ----------------------------
-loadAllFixtures();
-
-setInterval(checkLineups, 60000);
-setInterval(updateLive, 30000);
+loadFixtures();
+``
