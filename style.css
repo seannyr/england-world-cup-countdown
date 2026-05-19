@@ -6,7 +6,7 @@ body {
 
   /* CHAOS LAYERS */
   background:
-    url("assets/no-need.jpg") repeat,
+    background: url("assets/no-need.jpeg") repeat,
     url("https://upload.wikimedia.org/wikipedia/en/thumb/8/8b/England_national_football_team_crest.svg/512px-England_national_football_team_crest.svg.png") repeat,
     url("https://i.imgur.com/2yaf2wb.png") repeat,
     repeating-linear-gradient(
