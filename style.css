@@ -1,44 +1,81 @@
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0b1220;
+  font-family: "Comic Sans MS", cursive;
+  background: url("https://i.imgur.com/8bKQp0T.gif");
+  color: yellow;
+  text-align: center;
+}
+
+marquee {
+  background: red;
   color: white;
+  font-weight: bold;
+  font-size: 20px;
 }
 
 .hero {
-  text-align: center;
-  padding: 40px 20px;
-  background: linear-gradient(180deg, #102040, #0b1220);
+  padding: 30px;
 }
 
-.countdown {
-  font-size: 2rem;
-  font-weight: bold;
-  margin: 15px 0;
+.hero h1 {
+  font-size: 3rem;
+  text-shadow: 3px 3px blue;
+  animation: flash 1s infinite;
+}
+
+@keyframes flash {
+  0% { color: red; }
+  50% { color: white; }
+  100% { color: blue; }
 }
 
 main {
   max-width: 900px;
   margin: auto;
-  padding: 20px;
 }
 
 .card {
-  background: #16233c;
+  background: linear-gradient(45deg, red, white, blue);
+  color: black;
   padding: 20px;
-  border-radius: 14px;
-  margin-bottom: 20px;
+  border-radius: 20px;
+  border: 4px dashed yellow;
+  margin: 20px;
+}
+
+h2, h3 {
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
 }
 
 .lineup-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 10px;
 }
 
 .player {
-  background: #1d3152;
+  background: url("https://i.imgur.com/ybX8X.gif");
   padding: 10px;
-  border-radius: 10px;
-  text-align: center;
+  border: 2px solid red;
+  font-weight: bold;
 }
+
+/* spinning badge */
+.hero::after {
+  content: "";
+  display: block;
+  width: 120px;
+  height: 120px;
+  margin: 20px auto;
+  background: url("https://upload.wikimedia.org/wikipedia/en/thumb/8/8b/England_national_football_team_crest.svg/1024px-England_national_football_team_crest.svg.png") no-repeat center/contain;
+  animation: spin 5s linear infinite;
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+``
