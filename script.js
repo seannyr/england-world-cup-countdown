@@ -5,9 +5,7 @@ let fixtures = [];
 let englandFixtures = [];
 let currentMatch = null;
 
-// ----------------------------
-// LOAD DATA (API FIRST, FALLBACK SECOND)
-// ----------------------------
+// LOAD DATA (API + fallback)
 async function loadData() {
   try {
     const res = await fetch(
@@ -30,20 +28,14 @@ async function loadData() {
     }
 
   } catch {
-    console.log("Using fallback JSON");
-
     const res = await fetch("fixtures.json");
     const data = await res.json();
-
     fixtures = data.map(f => ({ ...f, id: null }));
   }
 
   init();
 }
 
-// ----------------------------
-// INIT
-// ----------------------------
 function init() {
   fixtures.sort((a,b) => new Date(a.date) - new Date(b.date));
 
@@ -56,13 +48,11 @@ function init() {
   setInterval(updateEverything, 1000);
 }
 
-// ----------------------------
 function getNextEnglandMatch() {
   const now = new Date();
   return englandFixtures.find(m => new Date(m.date) > now);
 }
 
-// ----------------------------
 function renderFirstMatch() {
   const first = fixtures[0];
 
@@ -74,14 +64,12 @@ function renderFirstMatch() {
   `;
 }
 
-// ----------------------------
 function updateEverything() {
   const now = new Date();
 
   updateCountdown("global-countdown", new Date(fixtures[0].date), now);
 
   currentMatch = getNextEnglandMatch();
-
   if (!currentMatch) return;
 
   document.getElementById("england-match").innerHTML = `
@@ -97,7 +85,6 @@ function updateEverything() {
   loadLineups();
 }
 
-// ----------------------------
 function updateCountdown(id, target, now) {
   const diff = target - now;
 
@@ -115,9 +102,7 @@ function updateCountdown(id, target, now) {
   `;
 }
 
-// ----------------------------
-// LIVE DATA
-// ----------------------------
+// LIVE
 async function loadLive() {
   if (!currentMatch?.id) return;
 
@@ -141,23 +126,8 @@ async function loadLive() {
   `;
 }
 
-// ----------------------------
 // LINEUPS
-// ----------------------------
 async function loadLineups() {
   if (!currentMatch?.id) return;
 
   const res = await fetch(
-    `${BASE_URL}/fixtures/lineups?fixture=${currentMatch.id}`,
-    { headers: { "x-apisports-key": API_KEY } }
-  );
-
-  const data = await res.json();
-
-  if (!data.response?.length) return;
-
-  document.getElementById("lineups-section").style.display = "block";
-
-  document.getElementById("lineups").innerHTML =
-    data.response.map(team => `
-      <div>
