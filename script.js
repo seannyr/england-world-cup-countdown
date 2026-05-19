@@ -8,24 +8,28 @@ let lineupsLoaded = false;
 // LOAD NEXT ENGLAND MATCH
 // --------------------
 async function loadNextMatch() {
-  const res = await fetch(`${BASE_URL}/fixtures?team=50&next=10`, {
+  const res = await fetch(`${BASE_URL}/fixtures?next=20`, {
     headers: {
       "x-apisports-key": API_KEY
     }
   });
 
   const data = await res.json();
+
   const match = data.response.find(m =>
-    m.teams.home.name === "England" || m.teams.away.name === "England"
+    m.teams.home.name === "England" ||
+    m.teams.away.name === "England"
   );
+
+  if (!match) return;
 
   currentFixture = match;
 
   document.getElementById("next-match").innerHTML = `
     <div class="card">
-      <h3>${match.teams.home.name} vs ${match.teams.away.name}</h3>
+      <h3>🏴 ${match.teams.home.name} vs ${match.teams.away.name}</h3>
       <p>📍 ${match.fixture.venue.name}</p>
-      <p>🗓 ${new Date(match.fixture.date).toDateString()}</p>
+      <p>🗓 ${new Date(match.fixture.date).toLocaleString("en-GB")}</p>
     </div>
   `;
 
