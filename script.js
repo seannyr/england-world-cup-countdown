@@ -171,4 +171,3 @@ async function loadLineups() {
 }
 
 loadData();
-``
